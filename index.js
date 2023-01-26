@@ -16,7 +16,20 @@ app.get('/', async (req, res, next) => {
 
 // POST /register
 // TODO - takes req.body of {username, password} and creates a new user with the hashed password
-
+app.post('/regiser', async (req, res, next) => {
+  try{
+    saltCount = 10;
+    const {username, password } = req.body;
+    const hashed = await bcrypt.hash(password, saltCount)
+    let createdUser = await User.create({username, password:hashed})
+    if (createdUser){
+      res(200).send(`successfully created user ${username}`)
+    } 
+  } catch (error) {
+    console.error(error);
+    next(error)
+  }
+});
 // POST /login
 // TODO - takes req.body of {username, password}, finds user by username, and compares the password with the hashed version from the DB
 
